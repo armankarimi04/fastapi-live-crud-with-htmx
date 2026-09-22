@@ -1,0 +1,15 @@
+{% extends "_base.html" %}
+
+
+{% block content %}
+<div>
+    <button class="btn btn-primary"
+            hx-get="/get-message"
+            hx-target="#response-holder"
+            hx-trigger="click"
+            hx-swap="innerHTML"
+        >Get Message
+    </button>
+    <div id="response-holder"></div>
+</div>
+{% endblock content %}

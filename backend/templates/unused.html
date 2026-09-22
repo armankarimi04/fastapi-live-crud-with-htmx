@@ -1,0 +1,23 @@
+{% for css in vite_css('static/js/main.js') %}
+        <link rel="stylesheet" href="{{ css }}">
+{% endfor %}
+<!-- this loads css, put it in head after fixing it -->
+
+
+
+
+
+<!-- this goes before closing body tag, needs fixing -->
+{% if dev_mode %}
+        <script type="module" src="http://localhost:5173/main.js"></script>
+{% else %}
+        <script type="module" src="{{ vite_asset('static/js/main.js') }}"></script>
+{% endif %}
+
+
+
+
+<!-- this is directly from vite.dev documentation -->
+<!-- if development -->
+<script type="module" src="http://localhost:5173/@vite/client"></script>
+<script type="module" src="http://localhost:5173/main.js"></script>
