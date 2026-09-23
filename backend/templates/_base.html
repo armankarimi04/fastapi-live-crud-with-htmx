@@ -7,12 +7,13 @@
 
     <link rel="stylesheet" href="{{ vite_asset('static/css/style.css') }}">
 </head>
-<body>
+<body class="m-20">
     [THIS IS BASE]
     {% block content %}
     {% endblock content %}
 
 
     <script type="module" src="{{ vite_asset('static/js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='js/htmax.js') }}"></script>
 </body>
 </html>

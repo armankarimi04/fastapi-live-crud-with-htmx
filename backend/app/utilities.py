@@ -33,13 +33,9 @@ def vite_css(entrypoint: str) -> list[str]:
     if DEV:
         return f"http://localhost:5173/{entrypoint}"
     asset = vite_manifest[entrypoint]
-    # return [
-    #     f"/static/dist/{css}"
-    #     for css in asset.get("css", [])
-    # ]
-    # return f"/static/dist/{asset["css"]}"
-    a = [f"/static/dist/{css}" for css in asset.get('css', [])]
-    print("\n", a, "\n")
+    return [f"/static/dist/{css}" for css in asset.get('css', [])]
+
+
 
 templates.env.globals["vite_asset"] = vite_asset
 templates.env.globals["vite_css"] = vite_css
