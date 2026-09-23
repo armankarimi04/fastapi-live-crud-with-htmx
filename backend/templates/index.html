@@ -12,9 +12,23 @@
     </button>
     <div id="response-holder"></div>
 
-
     <button class="btn btn-secondary mt-8" hx-get="/static/css/style.css" hx-swap="download">
         Download Report
     </button>
+
+    <div class="mt-10">
+        <div x-data="{ open: false }">
+            <button class="btn btn-secondary btn-sm" @click="open = !open">Toggle Alpine State</button>
+            <div x-show="open">
+                <button class="btn btn-info btn-xs" 
+                        hx-get="/get-message" 
+                        hx-target="#result"
+                        hx-swap="innerHTML">
+                    Fetch data
+                </button>
+            </div>
+        </div>
+        <div id="result"></div>
+    </div>
 </div>
 {% endblock content %}
