@@ -34,6 +34,8 @@ async def items_list(request: Request, db: AsyncSessionDep) -> Response:
 
 @router.get("/items/all")
 async def items_all(request: Request, db: AsyncSessionDep):
+    import time
+    time.sleep(2)
     items, _ = await services.all_products(db)
     return templates.TemplateResponse(request, "main/fragments/data/table-body.html", {'items': items})
 

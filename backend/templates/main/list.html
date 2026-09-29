@@ -83,7 +83,7 @@
 
 </div>
 <div>
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto" id="products-list">
         <table class="table table-xs">
             <thead>
                 <tr>
@@ -103,22 +103,35 @@
             </thead>
             <tbody id="table-body">
                 {% for item in items %}
-                    {% set row_index = loop.index %}
-                    {% include "main/fragments/data/row2.html" %}
-                    <script>
-                        document.body.addEventListener(`editSuccess_{{ item.id }}`, function (evt) {
-                            // console.log("EVENT", evt);
-                            const row = document.getElementById("row-{{ loop.index }}");
-                            Alpine.$data(row).editing = false;
-                        });
-                    </script>
+                {% set row_index = loop.index %}
+                {% include "main/fragments/data/row2.html" %}
+                <script>
+                    document.body.addEventListener(`editSuccess_{{ item.id }}`, function (evt) {
+                        // console.log("EVENT", evt);
+                        const row = document.getElementById("row-{{ loop.index }}");
+                        Alpine.$data(row).editing = false;
+                    });
+                </script>
                 {% endfor%}
             </tbody>
         </table>
     </div>
-    <button class="btn btn-info btn-sm w-32" hx-get="/items/all" hx-target="#table-body" hx-trigger="click"
-        hx-swap="outerHTML">
+
+    <button class="btn btn-info btn-sm w-32 justify-center" hx-get="/items/all" hx-target="#table-body"
+        hx-trigger="click" hx-swap="outerHTML" hx-indicator="#spinner" hx-disable="this"
+        hx-on:htmx:before:request="hideTable();"
+        hx-on:htmx:after:request="unhideTable();">
         Refresh
     </button>
+    <span id="spinner" class="loading loading-spinner loading-xl htmx-indicator"></span>
+    <script>
+        function hideTable() {
+            document.getElementById('products-list').style.opacity = 0.4;
+        }
+
+        function unhideTable() {
+            document.getElementById('products-list').style.opacity = 1.0;
+        }
+    </script>
 </div>
 {% endblock content %}
