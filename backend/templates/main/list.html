@@ -1,0 +1,37 @@
+{% extends "_base.html" %}
+
+{% block content %}
+<div>
+    <div class="overflow-x-auto">
+        <table class="table table-xs">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>
+                        Select 
+                        <span class="text-xs">
+                            <input type="checkbox" class="checkbox checkbox-xs">
+                        </span>
+                    </th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>In Stock</th>
+                    <th>Available</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                {% if items %}
+                    {% include "main/fragments/data/table-body.html" %}
+                {% else %}
+                    <div class="text-md">No records</div>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <button class="btn btn-info btn-sm w-32" hx-get="/items/all" hx-target="#table-body" hx-trigger="click"
+        hx-swap="innerHTML">
+        Refresh
+    </button>
+</div>
+{% endblock content %}

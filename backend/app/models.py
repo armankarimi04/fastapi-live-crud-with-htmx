@@ -1,6 +1,7 @@
 import datetime
+from typing import List
 
-from sqlalchemy import DateTime, String
+from sqlalchemy import DateTime, String, ForeignKey
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 
@@ -14,9 +15,21 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 
 
-class Book(Base):
-    __tablename__ = "books"
+class Product(Base):
+    __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    title: Mapped[str] = mapped_column(String(64))
-    author: Mapped[str] = mapped_column(nullable=True)
+    name: Mapped[str] = mapped_column(String(32))
+    category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
+    category: Mapped["Category"] = relationship(back_populates="products")
+    in_stock: Mapped[int] = mapped_column(nullable=True)
+    available: Mapped[bool] = mapped_column(nullable=True)
+
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(32), unique=True)
+    products: Mapped[List["Product"]] = relationship(back_populates="category")
+

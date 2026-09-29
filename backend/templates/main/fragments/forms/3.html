@@ -1,0 +1,76 @@
+<div x-data="{ open: false }" class="flex items-center">
+  <button class="btn-default btn w-32 btn-sm" @click="open = true">
+    New
+  </button>
+
+  <dialog id="new_product_modal" class="modal" :class=" {'modal-open': open }">
+    <div class="modal-box">
+      <form method="dialog">
+        <button class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm" @click="open = false">
+          ✕
+        </button>
+      </form>
+
+      <form class="w-full rounded-b-lg bg-white" hx-post="/items" hx-target="#items-table-body" hx-swap="beforeend"
+        @htmx:after-request="if ($event.detail.successful) open = false">
+        <h2 class="mb-6 text-xl font-semibold text-gray-800">New Product</h2>
+        <div class="flex flex-col gap-4">
+          <fieldset class="fieldset w-full rounded-box border border-base-300 bg-base-200 p-4">
+            <div>
+              <label for="product_name" class="mb-1 block text-sm font-medium">Name:</label>
+              <input type="text" name="name" id="product_name" placeholder="Name"
+                class="input w-full rounded-lg border px-3 py-2" />
+            </div>
+            <div>
+              <label for="category_id" class="mb-1 block text-sm font-medium">Category:</label>
+              <select name="category_id" id="category_id" class="select w-full rounded-lg border px-3 py-2">
+                {% for category in categories %}
+                <option value="{{ category.id }}">
+                  {{ cateogry.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="in_stock" class="mb-1 block text-sm font-medium">In Stock:</label>
+              <input type="number" name="in_stock" id="in_stock" placeholder="0"
+                class="input w-full rounded-lg border px-3 py-2" />
+            </div>
+            <div class="mt-2 flex">
+              <label for="available" class="block text-sm font-medium">Available?</label>
+              <input type="checkbox" class="checkbox ml-2 checkbox-md px-3 py-2" name="available" />
+            </div>
+          </fieldset>
+          <div>
+            <fieldset class="fieldset w-full rounded-box border border-base-300 bg-base-200 p-4">
+              <legend class="fieldset-legend">Pick a file</legend>
+              <input type="file" class="file-input w-full" />
+              <label class="label">Max size 2MB</label>
+            </fieldset>
+          </div>
+          <div>
+            <fieldset class="fieldset w-full rounded-box border border-base-300 bg-base-200 p-4">
+              <legend class="fieldset-legend">Description</legend>
+              <textarea class="textarea h-20 w-full" placeholder="Other information such as size and ..."></textarea>
+              <div class="label">Optional</div>
+            </fieldset>
+          </div>
+          <div class="flex justify-between">
+            <button type="submit" class="btn h-8 w-32 btn-outline px-5 py-2 btn-info btn-md">
+              Submit
+            </button>
+
+            <button type="button" class="btn-default btn h-8 w-32 btn-outline btn-md">Clear</button>
+
+            <button type="button" class="modal-backdrop btn h-8 w-32 btn-outline btn-error btn-md"
+              @click="open = false">Cancel</button>
+          </div>
+        </div>
+      </form>
+      <div class="modal-backdrop">
+        <button @click="open = false">close</button>
+      </div>
+    </div>
+  </dialog>
+
+</div>

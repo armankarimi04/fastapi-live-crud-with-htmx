@@ -30,7 +30,7 @@ app.add_middleware(
 app.mount(path="/static", app=StaticFiles(directory="static"), name="static")
 # -> /static/css/style.css would serve the file from ./static/css/style.css
 
-# i may need to consider:
+
 # from pathlib import Path
 # BASE_DIR = Path(__file__).resolve().parent
 # app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")

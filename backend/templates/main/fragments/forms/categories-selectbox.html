@@ -1,0 +1,5 @@
+<select x-show="editing" name="category_id" class="select select-xs h-6">
+    {% for category in categories %}
+        <option value="{{ category.id }}">{{ category.name }}</option>
+    {% endfor %}
+</select>
