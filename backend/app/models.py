@@ -1,7 +1,8 @@
 import datetime
 from typing import List
+from decimal import Decimal
 
-from sqlalchemy import DateTime, String, ForeignKey
+from sqlalchemy import DateTime, String, ForeignKey, Numeric
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 
@@ -24,6 +25,7 @@ class Product(Base):
     category: Mapped["Category"] = relationship(back_populates="products")
     in_stock: Mapped[int] = mapped_column(nullable=True)
     available: Mapped[bool] = mapped_column(nullable=True)
+    price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=True)
 
 
 class Category(Base):
