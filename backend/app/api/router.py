@@ -49,23 +49,14 @@ async def edit_row(request: Request, item_id: int, db: AsyncSessionDep):
 
 @router.post("/items/")
 async def items_create(request: Request, data: Annotated[schemas.ProductIn, Form()], db: AsyncSessionDep):
-    new_product = await services.create_product(db, **data.model_dump())
+    new_product = await services.create_product(db, data)
     if new_product:
-        if request.headers["HX-Request"]:
+        if request.headers.get("HX-Request"):
             response = templates.TemplateResponse(request, "main/fragments/data/row.html", {'item': new_product})
             response.headers["HX-Trigger"] = "success"
             return response
         return new_product
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Something went wrong")
-
-
-@router.post("/new-product")
-async def new_product(request: Request, data: Annotated[schemas.ProductIn, Form()], db: AsyncSessionDep):
-    new_product = await services.create_product(db, name=data.name, category_id=data.category_id, in_stock=data.in_stock, available=data.available)
-    if new_product:
-        if request.headers["HX-Request"]:
-            return templates.TemplateResponse(request, "main/fragments/messages/result.html")
-    raise HTTPException(500)
 
 
 @router.post("/categories/")
@@ -105,6 +96,7 @@ async def update_product(
     # if don't need to return the object or update joined tables, ORM's update statement is more efficient
     updated_item = await services.update_product(item_id, data, db)
     if updated_item:
+        print("\n", updated_item.name)
         response = templates.TemplateResponse(request, "main/fragments/data/row.html", {'item': updated_item, 'row_index': data.row_index})
         response.headers["HX-Trigger"] = f"editSuccess_{updated_item.id}"
         return response

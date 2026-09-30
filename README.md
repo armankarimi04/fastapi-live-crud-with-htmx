@@ -6,3 +6,6 @@ htmax does not work, need to install extensions manually.
 
 Provide template routes with no context. \
 Provide api routes for json data.
+
+to provide initial data for database, run this command after db was initialized:
+> (in backend folder): python -m app.seed.seed

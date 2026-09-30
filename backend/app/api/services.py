@@ -1,3 +1,4 @@
+from decimal import Decimal
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
@@ -15,22 +16,13 @@ async def get_product(item_id: int, db: AsyncSessionDep):
 
 async def create_product(
     db: AsyncSessionDep,
-    name: str,
-    category_id: int,
-    in_stock: int = 0,
-    available: bool = False,
+    data: ProductIn
 ) -> Product:
     new_item = Product(
-        name=name, 
-        category_id=category_id, 
-        in_stock=in_stock, 
-        available=available
+        name=data.name, category_id=data.category_id, in_stock=data.in_stock, available=data.available, price=data.price
     )
     db.add(new_item)
     await db.flush() # insert but do not close transaction
-    # await db.commit()
-    # await db.refresh(new_item)
-    # return new_item
     result = await db.execute(select(Product).where(Product.id == new_item.id).options(selectinload(Product.category)))
     item = result.scalar_one()
     await db.commit()

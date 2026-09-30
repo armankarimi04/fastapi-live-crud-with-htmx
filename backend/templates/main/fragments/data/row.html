@@ -1,4 +1,4 @@
-<tr id="row-{{ loop.index }}" x-data="{ editing: false }">
+<tr id="row-{{ row_index }}" x-data="{ editing: false }" class="text-center">
     <th scope="row">
         {{ row_index }}
         <input type="hidden" name="row_index" id="row_index_value_{{ item.id }}" value="{{ row_index }}">
@@ -13,18 +13,15 @@
             value="{{ item.name }}">
     </td>
     <td>
-        <div class="flex">
-            <span x-show="!editing">{{ item.category.name }}</span>
-
-            <div x-show="editing" id="categories-list">
-                <button class="btn btn-xs btn-dash w-24 h-12" x-show="editing" hx-get="/load-categories"
-                    hx-target="closest div" hx-swap="innerHTML">
-                    Load categories
-                </button>
-                <select name="category_id" id="product_category_id_{{ item.id }}">
-                    <option value="{{ item.category.id }}">{{ item.category.name }}</option>
-                </select>
-            </div>
+        <span x-show="!editing">{{ item.category.name }}</span>
+        <div x-show="editing" id="categories-list">
+            <button class="btn btn-xs btn-dash w-24 h-12" x-show="editing" hx-get="/load-categories"
+                hx-target="closest div" hx-swap="innerHTML">
+                Load categories
+            </button>
+            <select name="category_id" id="product_category_id_{{ item.id }}">
+                <option value="{{ item.category.id }}">{{ item.category.name }}</option>
+            </select>
         </div>
 
     </td>
@@ -34,12 +31,45 @@
             max="100" name="in_stock" value="{{ item.in_stock }}">
     </td>
     <td>
-        <span x-show="!editing">{{ item.available }}</span>
-        <input x-show="editing" id="product_available_{{ item.id }}" type="checkbox" class="checkbox" name="available"
+        {% if item.available %}
+            <span x-show="!editing" class="text-xl text-green-500">&#10003;</span>
+        {% else %}
+            <span x-show="!editing" class="text-xl text-red-600">&#10007;</span>
+        {% endif %}
+            <input x-show="editing" id="product_available_{{ item.id }}" type="checkbox" class="checkbox" name="available"
             {% if item.available %} checked {% endif %}>
     </td>
     <td>
-        <div class="flex gap-4">
+        <span x-show="!editing">{{ item.price }} Toomans</span>
+        <input x-show="editing" type="number" id="product_price_{{ item.id }}" value="{{ item.price }}" name="price" class="input input-xs h-6" placeholder="0">
+    </td>
+    <td>
+        <!-- In-line Edit in progress actions: Confirm and Cancel -->
+        <div class="flex gap-4 justify-center" x-show="editing">
+            <button 
+                class="btn btn-sm btn-success btn-outline btn-circle" 
+                x-show="editing" 
+                hx-put="/items/{{ item.id }}"
+                hx-include="#product_name_{{ item.id }}, #product_category_id_{{ item.id }}, #product_in_stock_{{ item.id }}, #product_available_{{ item.id }}, #product_price_{{ item.id }}, #row_index_value_{{ item.id }}"
+                hx-target="#row_{{ row_index }}" 
+                hx-swap="outerHTML">
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                </svg>
+
+            </button>
+            <button class="btn btn-sm btn-error btn-outline btn-circle" x-show="editing" @click="editing = false">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Normal Actions In-Line Edit, Full Edit, Set Discount, Remove, Disable item -->
+        <div class="flex gap-4 justify-center">
             <div class="tooltip" data-tip="Edit row in-line">
                 <button x-show="!editing" @click="editing = true" class="btn btn-circle btn-outline btn-accent btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -50,8 +80,7 @@
                 </button>
             </div>
 
-            <div class="tooltip" data-tip="Full Edit">
-
+            <div class="tooltip" data-tip="Full Edit" x-show="!editing">
                 <button class="btn btn-circle btn-outline btn-warning btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -61,7 +90,7 @@
                 </button>
             </div>
 
-            <div class="tooltip" data-tip="Set discount">
+            <div class="tooltip" data-tip="Set discount" x-show="!editing">
                 <button class="btn btn-circle btn-outline btn-default btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -73,7 +102,7 @@
             </div>
 
 
-            <div class="tooltip" data-tip="Remove item">
+            <div class="tooltip" data-tip="Remove item" x-show="!editing">
                 <button class="btn btn-circle btn-error btn-outline btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
@@ -83,27 +112,15 @@
                 </button>
             </div>
 
-            <div class="tooltip" data-tip="Disable item">
+            <div class="tooltip" data-tip="Disable item" x-show="!editing">
                 <button class="btn btn-circle btn-default btn-outline btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
                     </svg>
-
                 </button>
             </div>
         </div>
-
-    </td>
-    <td>
-        <button class="btn btn-xs btn-success" x-show="editing" hx-put="/items/{{ item.id }}"
-            hx-include="#product_name_{{ item.id }}, #product_category_id_{{ item.id }}, #product_in_stock_{{ item.id }}, #product_available_{{ item.id }}, #row_index_value_{{ item.id }}"
-            hx-target="closest tr" hx-swap="innerHTML">
-            Confirm
-        </button>
-        <button class="btn btn-xs btn-error" x-show="editing" @click="editing = false">
-            Cancel
-        </button>
     </td>
 </tr>

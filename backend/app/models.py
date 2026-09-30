@@ -20,12 +20,12 @@ class Product(Base):
     __tablename__ = "products"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(32))
+    name: Mapped[str] = mapped_column(String(32), nullable=False)
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"))
     category: Mapped["Category"] = relationship(back_populates="products")
     in_stock: Mapped[int] = mapped_column(nullable=True)
     available: Mapped[bool] = mapped_column(nullable=True)
-    price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=True)
+    price: Mapped[Decimal] = mapped_column(Numeric(precision=10, scale=3), default=0) # precision: num of digits in number, scale: num of digits to the right side of the decimal point
 
 
 class Category(Base):

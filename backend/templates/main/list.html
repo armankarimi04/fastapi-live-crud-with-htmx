@@ -14,15 +14,15 @@
                 </button>
             </form>
 
-            <form class="w-full rounded-b-lg bg-white" hx-post="/items" hx-target="#items-table-body"
-                hx-swap="beforeend" hx-on:success="open = false; this.reset()">
+            <form class="w-full rounded-b-lg bg-white" hx-post="/items/" hx-target="#items-table-body"
+                hx-swap="beforeend" hx-on:success="newItemSuccess()">
                 <h2 class="mb-6 text-xl font-semibold text-gray-800">New Product</h2>
                 <div class="flex flex-col gap-4">
                     <fieldset class="fieldset w-full rounded-box border border-base-300 bg-base-200 p-4">
                         <div>
                             <label for="product_name" class="mb-1 block text-sm font-medium">Name:</label>
                             <input type="text" name="name" id="product_name" placeholder="Name"
-                                class="input w-full rounded-lg border px-3 py-2" />
+                                class="input w-full rounded-lg border px-3 py-2" required />
                         </div>
                         <div>
                             <label for="category_id" class="mb-1 block text-sm font-medium">Category:</label>
@@ -49,6 +49,11 @@
                         <div class="mt-2 flex">
                             <label for="available" class="block text-sm font-medium">Available?</label>
                             <input type="checkbox" checked="checked" class="checkbox ml-2" name="available" />
+                        </div>
+                        <div class="mt-2 flex">
+                            <label for="price" class="block text-sm font-medium">Price</label>
+                            <input type="text" class="input w-full rounded-lg border px-3 py-2" name="price"
+                                id="product_price" placeholder="0">
                         </div>
                     </fieldset>
                     <div>
@@ -86,7 +91,7 @@
     <div class="overflow-x-auto" id="products-list">
         <table class="table table-xs">
             <thead>
-                <tr>
+                <tr class="text-center">
                     <th>#</th>
                     <th>
                         Select
@@ -98,13 +103,14 @@
                     <th>Category</th>
                     <th>In Stock</th>
                     <th>Available</th>
+                    <th>Price</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody id="table-body">
                 {% for item in items %}
                 {% set row_index = loop.index %}
-                {% include "main/fragments/data/row2.html" %}
+                {% include "main/fragments/data/row.html" %}
                 <script>
                     document.body.addEventListener(`editSuccess_{{ item.id }}`, function (evt) {
                         // console.log("EVENT", evt);
@@ -119,17 +125,34 @@
 
     <button class="btn btn-info btn-sm w-32 justify-center" hx-get="/items/all" hx-target="#table-body"
         hx-trigger="click" hx-swap="outerHTML" hx-indicator="#spinner" hx-disable="this"
-        hx-on:htmx:before:request="hideTable();" hx-on:htmx:after:request="showTable();">
+        hx-on:htmx:before:request="refreshInProgress();" hx-on:htmx:after:request="showTable();">
         Refresh
     </button>
     <span id="spinner" class="loading loading-spinner loading-xl htmx-indicator"></span>
     <script>
-        function hideTable() {
+        function refreshInProgress() {
             document.getElementById('products-list').style.opacity = 0.4;
+            // disable all buttons
+
+            // this returns Static NodeList
+            document.querySelectorAll("button").forEach(button => {
+                button.disabled = true;
+            });
         }
 
         function showTable() {
             document.getElementById('products-list').style.opacity = 1.0;
+            // re-enable all buttons
+
+            // this returns a live collection
+            const buttons = document.getElementsByTagName('button');
+            for (const button of buttons) {
+                button.disabled = false;
+            }
+        }
+
+        function newItemSuccess() {
+            console.log("NEW ITEM SUCCESS");
         }
     </script>
 </div>
