@@ -34,17 +34,9 @@ async def items_list(request: Request, db: AsyncSessionDep) -> Response:
 
 @router.get("/items/all")
 async def items_all(request: Request, db: AsyncSessionDep):
-    import time
-    time.sleep(2)
     items, _ = await services.all_products(db)
     return templates.TemplateResponse(request, "main/fragments/data/table-body.html", {'items': items})
 
-
-@router.get("/edit-row/{item_id}")
-async def edit_row(request: Request, item_id: int, db: AsyncSessionDep):
-    item = await services.get_product(item_id, db)
-    if item:
-        return templates.TemplateResponse(request, "main/fragments/forms/row-edit-form.html", {'product': item})
 
 
 @router.post("/items/")
@@ -96,7 +88,6 @@ async def update_product(
     # if don't need to return the object or update joined tables, ORM's update statement is more efficient
     updated_item = await services.update_product(item_id, data, db)
     if updated_item:
-        print("\n", updated_item.name)
         response = templates.TemplateResponse(request, "main/fragments/data/row.html", {'item': updated_item, 'row_index': data.row_index})
         response.headers["HX-Trigger"] = f"editSuccess_{updated_item.id}"
         return response
@@ -104,15 +95,6 @@ async def update_product(
 
 
 # Perhaps partial update (patch) was easier
-
-
-@router.get("/load/new-product-form")
-async def new_product_form(request: Request, db: AsyncSessionDep):
-    categories = await services.get_all_categories(db)
-    if request.headers["HX-Request"]:
-        return templates.TemplateResponse(request, "main/fragments/forms/new-product-form.html", {'categories': categories})
-    return Response("htmx failed")
-
 
 
 # @app.post("/items")
