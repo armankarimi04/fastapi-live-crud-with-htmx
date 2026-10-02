@@ -9,3 +9,7 @@ Provide api routes for json data.
 
 to provide initial data for database, run this command after db was initialized:
 > (in backend folder): python -m app.seed.seed
+
+
+datatables.net
+pip install datatables_server

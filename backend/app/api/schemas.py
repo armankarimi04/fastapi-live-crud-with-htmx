@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, field_validator, model_validator, ConfigDict
 from decimal import Decimal
 
 
@@ -39,8 +39,9 @@ class ProductOut(BaseModel):
     category_id: int
     in_stock: int | None = None
     available: bool | None = None
-    price: Decimal | None = None
+    price: float | None = None
     
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MultipleProducts(BaseModel):

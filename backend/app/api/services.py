@@ -1,5 +1,5 @@
 from decimal import Decimal
-from sqlalchemy import select, update
+from sqlalchemy import select, update, delete
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
 
@@ -41,7 +41,12 @@ async def update_product(item_id: int, data: ProductIn, db: AsyncSessionDep):
     return None
 
 
-async def remove_product():
+async def remove_product(item_id: int, db: AsyncSessionDep) -> None:
+    await db.execute(delete(Product).where(Product.id == item_id))
+    await db.commit()
+
+
+async def remove_multiple_products() -> int:
     pass
 
 
