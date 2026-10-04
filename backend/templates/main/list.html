@@ -15,7 +15,7 @@
             </form>
 
             <form class="w-full rounded-b-lg bg-white" hx-post="/views/" hx-target="#table-body"
-                hx-swap="beforeend" hx-on:success="newItemSuccess();">
+                hx-swap="beforeend" hx-on:success="newItemSuccess();" hx-on:htmx:after:request="this.reset();">
                 <h2 class="mb-6 text-xl font-semibold text-gray-800">New Product</h2>
                 <div class="flex flex-col gap-4">
                     <fieldset class="fieldset w-full rounded-box border border-base-300 bg-base-200 p-4">
