@@ -5,19 +5,17 @@ from sqlalchemy.exc import IntegrityError
 
 from app.dependencies import AsyncSessionDep
 from app.models import Product, Category
-from .schemas import ProductIn
+from .schemas import ProductIn, ProductOut, ProductPartialUpdate
 
 
-async def get_product(item_id: int, db: AsyncSessionDep):
+async def get_product(item_id: int, db: AsyncSessionDep) -> Product:
     stmt = select(Product).options(selectinload(Product.category)).where(Product.id == item_id)
-    query = await db.scalar(stmt)
-    return query
+    item = await db.scalar(stmt)
+    return item
 
 
-async def create_product(
-    db: AsyncSessionDep,
-    data: ProductIn
-) -> Product:
+
+async def create_product(db: AsyncSessionDep, data: ProductIn) -> Product:
     new_item = Product(
         name=data.name, category_id=data.category_id, in_stock=data.in_stock, available=data.available, price=data.price
     )
@@ -39,6 +37,20 @@ async def update_product(item_id: int, data: ProductIn, db: AsyncSessionDep):
         await db.refresh(item_db)
         return item_db
     return None
+
+
+async def update_product_partially(item_id: int, data: ProductPartialUpdate, db: AsyncSessionDep) -> Product:
+    item = await get_product(item_id, db)
+    if not item:
+        return None
+    update_values = data.model_dump(exclude_unset=True)
+    for field, value in update_values.items():
+        setattr(item, field, value)
+
+    await db.commit()
+    await db.refresh(item)
+    return item
+
 
 
 async def remove_product(item_id: int, db: AsyncSessionDep) -> None:

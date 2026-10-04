@@ -46,12 +46,14 @@
     <td>
         <!-- In-line Edit in progress actions: Confirm and Cancel -->
         <div class="flex gap-4 justify-center" x-show="editing">
+
+            <!-- Confirm in-line edit button -->
             <button 
                 class="btn btn-sm btn-success btn-outline btn-circle" 
                 x-show="editing" 
-                hx-put="/items/{{ item.id }}"
+                hx-put="/views/items/{{ item.id }}"
                 hx-include="#product_name_{{ item.id }}, #product_category_id_{{ item.id }}, #product_in_stock_{{ item.id }}, #product_available_{{ item.id }}, #product_price_{{ item.id }}, #row_index_value_{{ item.id }}"
-                hx-target="#row_{{ row_index }}" 
+                hx-target="#row-{{ row_index }}" 
                 hx-swap="outerHTML">
 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -60,6 +62,8 @@
                 </svg>
 
             </button>
+
+            <!-- Cancel in-line edit button -->
             <button class="btn btn-sm btn-error btn-outline btn-circle" x-show="editing" @click="editing = false">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="size-6">
@@ -123,4 +127,12 @@
             </div>
         </div>
     </td>
+    <script>
+        // tbody can only contain tr element, nothing else
+        document.body.addEventListener(`editSuccess_{{ item.id }}`, function (evt) {
+        //   console.log("EVENT", evt);
+          const row = document.getElementById("row-{{ item.id }}");
+          Alpine.$data(row).editing = false;
+        });
+    </script>
 </tr>

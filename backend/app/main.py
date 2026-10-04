@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
 
-from app.api.router import router
+from app.api.router import router as api_router
+from app.api.views import router as views_router
 from .database import init_async_db, async_engine
 
 
@@ -37,7 +38,8 @@ app.mount(path="/static", app=StaticFiles(directory="static"), name="static")
 # example file that will be served: /static/dist/assets/main-C8x93abc.js
 
 
-app.include_router(router)
+app.include_router(api_router, prefix="/api")
+app.include_router(views_router, prefix="/views")
 
 
 @app.get("/docs", include_in_schema=False)

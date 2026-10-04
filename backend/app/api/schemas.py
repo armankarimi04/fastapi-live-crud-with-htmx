@@ -33,6 +33,17 @@ class ProductUpdate(BaseModel):
     row_index: int | None = None
 
 
+
+class ProductPartialUpdate(BaseModel):
+    name: str | None = None
+    category_id: int | None = None
+    in_stock: int | None = None
+    available: bool | None = False
+    price: Decimal | None = None
+    row_index: int | None = None
+
+
+
 class ProductOut(BaseModel):
     id: int
     name: str

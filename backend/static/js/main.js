@@ -37,7 +37,7 @@ let table = new DataTable('#myTable', {
     processing: true,
     serverSide: true,
     ajax: {
-        url: "/provide-data",
+        url: "/api/provide-data",
         type: "GET",
         error: function(error) {
             console.log(error);

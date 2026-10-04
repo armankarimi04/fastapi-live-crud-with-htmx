@@ -123,12 +123,15 @@
         </table>
     </div>
 
-    <button class="btn btn-info btn-sm w-32 justify-center" hx-get="/items/all" hx-target="#table-body"
+    <!-- Refresh button -->
+    <button class="btn btn-info btn-sm w-32 justify-center" hx-get="/views/all" hx-target="#table-body"
         hx-trigger="click" hx-swap="outerHTML" hx-indicator="#spinner" hx-disable="this"
         hx-on:htmx:before:request="refreshInProgress();" hx-on:htmx:after:request="showTable();">
         Refresh
     </button>
+
     <span id="spinner" class="loading loading-spinner loading-xl htmx-indicator"></span>
+
     <script>
         function refreshInProgress() {
             document.getElementById('products-list').style.opacity = 0.4;
@@ -155,5 +158,6 @@
             console.log("NEW ITEM SUCCESS");
         }
     </script>
+
 </div>
 {% endblock content %}

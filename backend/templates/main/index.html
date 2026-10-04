@@ -4,7 +4,7 @@
 {% block content %}
 <div>
     <button class="btn btn-primary"
-            hx-get="/get-message"
+            hx-get="/api/get-message"
             hx-target="#response-holder"
             hx-trigger="click"
             hx-swap="innerHTML"
@@ -21,7 +21,7 @@
             <button class="btn btn-secondary btn-sm" @click="open = !open">Toggle Alpine State</button>
             <div x-show="open">
                 <button class="btn btn-info btn-xs" 
-                        hx-get="/get-message" 
+                        hx-get="/api/get-message" 
                         hx-target="#result"
                         hx-swap="innerHTML">
                     Fetch data

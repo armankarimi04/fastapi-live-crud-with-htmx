@@ -2,12 +2,5 @@
   {% for item in items %}
     {% set row_index = loop.index %}
       {% include "main/fragments/data/row.html" with context %}
-      <script>
-        document.body.addEventListener(`editSuccess_{{ item.id }}`, function (evt) {
-          // console.log("EVENT", evt);
-          const row = document.getElementById("row-{{ loop.index }}");
-          Alpine.$data(row).editing = false;
-        });
-      </script>
   {% endfor%}
 </tbody>
