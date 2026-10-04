@@ -1,4 +1,4 @@
-<tr id="row-{{ row_index }}" x-data="{ editing: false }" class="text-center">
+<tr id="row-{{ row_index }}" x-data="{ editing: false }" class="text-center hover:bg-base-300">
     <th scope="row">
         {{ row_index }}
         <input type="hidden" name="row_index" id="row_index_value_{{ item.id }}" value="{{ row_index }}">
@@ -75,7 +75,7 @@
         <!-- Normal Actions In-Line Edit, Full Edit, Set Discount, Remove, Disable item -->
         <div class="flex gap-4 justify-center">
             <div class="tooltip" data-tip="Edit row in-line">
-                <button x-show="!editing" @click="editing = true" class="btn btn-circle btn-outline btn-accent btn-sm">
+                <button x-show="!editing" @click="editing = true" class="btn btn-circle btn-ghost btn-outline btn-accent btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -85,7 +85,7 @@
             </div>
 
             <div class="tooltip" data-tip="Full Edit" x-show="!editing">
-                <button class="btn btn-circle btn-outline btn-warning btn-sm">
+                <button class="btn btn-circle btn-ghost btn-outline btn-warning btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -95,7 +95,7 @@
             </div>
 
             <div class="tooltip" data-tip="Set discount" x-show="!editing">
-                <button class="btn btn-circle btn-outline btn-default btn-sm">
+                <button class="btn btn-circle btn-ghost btn-outline btn-default btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -107,7 +107,7 @@
 
 
             <div class="tooltip" data-tip="Remove item" x-show="!editing">
-                <button class="btn btn-circle btn-error btn-outline btn-sm">
+                <button class="btn btn-circle btn-ghost btn-error btn-outline btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -117,7 +117,7 @@
             </div>
 
             <div class="tooltip" data-tip="Disable item" x-show="!editing">
-                <button class="btn btn-circle btn-default btn-outline btn-sm">
+                <button class="btn btn-circle btn-ghost btn-default btn-outline btn-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
