@@ -15,22 +15,20 @@ from . import services
 router = APIRouter()
 
 
-
-@router.get("/get-message")
-async def get_message(request: Request):
-    if request.headers.get("HX-Request"):
-        return "Hello from fastapi"
-    return "Request was not htmx"
-
+@router.get("/get-products-by-category/{category_id}")
+async def get_products_by_category(request: Request, category_id: int, db: AsyncSessionDep):
+    products = await services.get_all_products_by_category(category_id, db)
+    if products:
+        return {"products": products[0], "count": products[1]}
+    raise None
 
 
 @router.post("/categories/")
 async def categories_create(request: Request, data: schemas.CategoryIn, db: AsyncSessionDep) -> schemas.CategoryOut:
     new_category = await services.create_category(db, name=data.name)
     if new_category:
-        return new_category
+        return schemas.CategoryOut.model_validate(new_category)
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="This Category already exists")
-
 
 
 
@@ -39,16 +37,8 @@ async def get_item(request: Request, item_id: int, db: AsyncSessionDep) -> Produ
     item = await services.get_product(item_id, db)
     if item:
         return ProductOut.model_validate(item)
+    raise HTTPException(status=status.HTTP_404_NOT_FOUND, detail="Product not found 404")
 
-
-
-# this is just for my learning purposes, please ignore it
-@router.get("/some")
-async def html_or_swagger(request: Request):
-    accept = request.headers.get("accept", "")
-    if "text/html" in accept:
-        return {"response": "HTML request"}
-    return {"response": "API/Swagger request"}
 
 
 

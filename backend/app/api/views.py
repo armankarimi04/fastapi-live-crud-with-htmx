@@ -1,5 +1,6 @@
 # This file contains template responses
 from typing import Annotated
+from fastapi.responses import HTMLResponse
 from fastapi import (
     APIRouter, 
     Request, 
@@ -18,21 +19,21 @@ from . import services
 router = APIRouter()
 
 
-@router.get("/")
-async def index(request: Request) -> Response:
+@router.get("/", response_class=HTMLResponse)
+async def index(request: Request):
     return templates.TemplateResponse(request, "main/index.html", {})
 
 
 
-@router.get("/list")
-async def items_list(request: Request, db: AsyncSessionDep) -> Response:
+@router.get("/list", response_class=HTMLResponse)
+async def items_list(request: Request, db: AsyncSessionDep):
     items, count = await services.all_products(db)
     categories = await services.get_all_categories(db)
     return templates.TemplateResponse(request, "main/list.html", {'items': items, 'count': count, 'categories': categories})
 
 
 
-@router.get("/all")
+@router.get("/all", response_class=HTMLResponse)
 async def items_all(request: Request, db: AsyncSessionDep):
     import time
     time.sleep(1)
@@ -41,8 +42,7 @@ async def items_all(request: Request, db: AsyncSessionDep):
 
 
 
-
-@router.post("/")
+@router.post("/", response_class=HTMLResponse)
 async def items_create(request: Request, data: Annotated[schemas.ProductIn, Form()], db: AsyncSessionDep):
     new_product = await services.create_product(db, data)
     if new_product:
@@ -55,7 +55,7 @@ async def items_create(request: Request, data: Annotated[schemas.ProductIn, Form
 
 
 
-@router.get("/load-categories")
+@router.get("/load-categories", response_class=HTMLResponse)
 async def load_categories(request: Request, db: AsyncSessionDep):
     all_categories = await services.get_all_categories(db)
     if all_categories:
@@ -63,7 +63,7 @@ async def load_categories(request: Request, db: AsyncSessionDep):
 
 
 
-@router.get("/item/{item_id}")
+@router.get("/item/{item_id}", response_class=HTMLResponse)
 async def get_row(request: Request, item_id: int, db: AsyncSessionDep):
     item = await services.get_product(item_id, db)
     if item:
@@ -71,7 +71,7 @@ async def get_row(request: Request, item_id: int, db: AsyncSessionDep):
 
 
 
-@router.put("/items/{item_id}")
+@router.put("/items/{item_id}", )
 async def update_product(
     request: Request, 
     item_id: int, 

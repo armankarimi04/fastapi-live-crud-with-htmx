@@ -1,7 +1,7 @@
 from typing import Any
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.openapi.docs import get_swagger_ui_html
@@ -20,6 +20,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[Any, None]:
 
 app = FastAPI(lifespan=lifespan, docs_url=None)
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173",],
@@ -27,6 +28,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.mount(path="/static", app=StaticFiles(directory="static"), name="static")
 # -> /static/css/style.css would serve the file from ./static/css/style.css
@@ -56,3 +58,21 @@ async def custom_swagger_ui():
 @app.get("/")
 def root():
     return "root"
+
+
+
+# this is just for my learning purposes, please ignore it
+@app.get("/html-or-docs")
+async def html_or_swagger(request: Request):
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept:
+        return {"response": "HTML request"}
+    return {"response": "API/Swagger request"}
+
+
+
+@app.get("/get-message")
+async def get_message(request: Request):
+    if request.headers.get("HX-Request"):
+        return "Hello from fastapi"
+    return "Request was not htmx"

@@ -11,7 +11,9 @@ from .schemas import ProductIn, ProductOut, ProductPartialUpdate
 async def get_product(item_id: int, db: AsyncSessionDep) -> Product:
     stmt = select(Product).options(selectinload(Product.category)).where(Product.id == item_id)
     item = await db.scalar(stmt)
-    return item
+    if item:
+        return item
+    return None
 
 
 
@@ -65,16 +67,17 @@ async def remove_multiple_products() -> int:
 async def all_products(db: AsyncSessionDep) -> tuple[list, int]:
     query = await db.scalars(
         statement=select(Product)
-            .options(
-                selectinload(Product.category)
-            )
+            .options(selectinload(Product.category))
     )
     results = query.all()
     return results, len(results)
 
 
-async def get_all_products_by_category():
-    pass
+async def get_all_products_by_category(category_id: int, db: AsyncSessionDep) -> tuple[list, int]:
+    stmt = select(Product).where(Product.category_id == category_id)
+    query = await db.scalars(stmt)
+    results = query.all()
+    return results, len(results)
 
 
 async def create_category(db: AsyncSessionDep, name: str) -> Category | None:
