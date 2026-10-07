@@ -73,7 +73,7 @@ async def all_products(db: AsyncSessionDep) -> tuple[list, int]:
     return results, len(results)
 
 
-async def get_all_products_by_category(category_id: int, db: AsyncSessionDep) -> tuple[list, int]:
+async def all_products_by_category(category_id: int, db: AsyncSessionDep) -> tuple[list, int]:
     stmt = select(Product).where(Product.category_id == category_id)
     query = await db.scalars(stmt)
     results = query.all()

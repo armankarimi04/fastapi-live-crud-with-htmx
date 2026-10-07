@@ -15,13 +15,6 @@ from . import services
 router = APIRouter()
 
 
-@router.get("/get-products-by-category/{category_id}")
-async def get_products_by_category(request: Request, category_id: int, db: AsyncSessionDep):
-    products = await services.get_all_products_by_category(category_id, db)
-    if products:
-        return {"products": products[0], "count": products[1]}
-    raise None
-
 
 @router.post("/categories/")
 async def categories_create(request: Request, data: schemas.CategoryIn, db: AsyncSessionDep) -> schemas.CategoryOut:
@@ -32,13 +25,30 @@ async def categories_create(request: Request, data: schemas.CategoryIn, db: Asyn
 
 
 
-@router.get("/item/{item_id}")
+@router.get("/product/{item_id}")
 async def get_item(request: Request, item_id: int, db: AsyncSessionDep) -> ProductOut:
     item = await services.get_product(item_id, db)
     if item:
         return ProductOut.model_validate(item)
     raise HTTPException(status=status.HTTP_404_NOT_FOUND, detail="Product not found 404")
 
+
+
+@router.get("/product/by-category/{category_id}")
+async def get_products_by_category(request: Request, category_id: int, db: AsyncSessionDep):
+    products = await services.all_products_by_category(category_id, db)
+    if products:
+        return {"products": products[0], "count": products[1]}
+    raise None
+
+
+
+@router.get("/products")
+async def get_products(request: Request, db: AsyncSessionDep) -> schemas.MultipleProducts:
+    products = await services.all_products(db)
+    if products:
+        return schemas.MultipleProducts(products=products[0], total=products[1])
+    return None
 
 
 

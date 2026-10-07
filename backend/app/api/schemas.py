@@ -1,6 +1,7 @@
 from pydantic import BaseModel, field_validator, model_validator, ConfigDict
 from decimal import Decimal
 
+from app.models import Product
 
 
 class ProductIn(BaseModel):
@@ -56,7 +57,8 @@ class ProductOut(BaseModel):
 
 
 class MultipleProducts(BaseModel):
-    items: list[ProductOut]
+    products: list[ProductOut]
+    total: int
 
 
 class CategoryIn(BaseModel):
