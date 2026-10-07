@@ -2,10 +2,18 @@ from decimal import Decimal
 from sqlalchemy import select, update, delete
 from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
+from fastapi_filters.ext.sqlalchemy import apply_sorting
 
 from app.dependencies import AsyncSessionDep
 from app.models import Product, Category
 from .schemas import ProductIn, ProductOut, ProductPartialUpdate
+
+
+async def get_all_products_sorted(db: AsyncSessionDep, sorting):
+    stmt = apply_sorting(select(Product), sorting=sorting)
+    query = await db.scalars(stmt)
+    result = query.all()
+    return result
 
 
 async def get_product(item_id: int, db: AsyncSessionDep) -> Product:

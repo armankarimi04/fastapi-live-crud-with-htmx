@@ -4,6 +4,27 @@ from decimal import Decimal
 from app.models import Product
 
 
+class Product(BaseModel):
+    name: str
+    category_id: int
+    in_stock: int | None = None
+    available: bool | None = None
+    price: Decimal = Decimal(value="0")
+
+    @model_validator(mode="before")
+    @classmethod
+    def clean_empty_values_for_numeric(cls, values):
+        values = values.copy()
+
+        if values.get("in_stock") == "":
+            values["in_stock"] = 0
+
+        if values.get("price") == "":
+            values["price"] = Decimal("0")
+
+        return values
+
+
 class ProductIn(BaseModel):
     name: str
     category_id: int

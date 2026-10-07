@@ -1,8 +1,9 @@
 # This file contains json responses
 from typing import Annotated
-from fastapi import APIRouter, Request, Response, HTTPException, status, Form
+from fastapi import APIRouter, Request, Response, HTTPException, status, Form, Depends
 from fastapi.responses import JSONResponse
 from datatables_server import DataTable, Column
+from fastapi_filters import SortingValues, create_sorting
 
 from app.utilities import templates
 from app.dependencies import AsyncSessionDep
@@ -15,6 +16,16 @@ from . import services
 router = APIRouter()
 
 
+@router.get("/products/sorted")
+async def get_sorted_products(
+        db: AsyncSessionDep, 
+        sorting: SortingValues = Depends(create_sorting("name"))
+    ) -> schemas.MultipleProducts:
+    products = await services.get_all_products_sorted(db, sorting)
+    if products:
+        return schemas.MultipleProducts(products=products, total=len(products))
+
+
 
 @router.post("/categories/")
 async def categories_create(request: Request, data: schemas.CategoryIn, db: AsyncSessionDep) -> schemas.CategoryOut:
@@ -22,6 +33,15 @@ async def categories_create(request: Request, data: schemas.CategoryIn, db: Asyn
     if new_category:
         return schemas.CategoryOut.model_validate(new_category)
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="This Category already exists")
+
+
+
+@router.post("/products")
+async def products_create(request: Request, data: schemas.ProductIn, db: AsyncSessionDep):
+    new_product = await services.create_product(db, data)
+    if new_product:
+        return new_product
+    raise HTTPException(500)
 
 
 
